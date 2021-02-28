@@ -42,7 +42,11 @@ namespace EdwardHsu.Lab.TOTP
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EdwardHsu.Lab.TOTP v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "EdwardHsu.Lab.TOTP v1");
+                    c.InjectStylesheet("fixQRCode.css");
+                });
             }
 
             app.UseHttpsRedirection();
@@ -55,6 +59,8 @@ namespace EdwardHsu.Lab.TOTP
             {
                 endpoints.MapControllers();
             });
+
+            app.UseStaticFiles();
         }
     }
 }

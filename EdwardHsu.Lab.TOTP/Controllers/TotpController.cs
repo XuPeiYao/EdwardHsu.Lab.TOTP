@@ -42,17 +42,7 @@ namespace EdwardHsu.Lab.TOTP.Controllers
                 secretKey = KeyGeneration.GenerateRandomKey();
             }
 
-            UriBuilder uriBuilder = new UriBuilder();
-            uriBuilder.Scheme = "otpauth";
-            uriBuilder.Host = "totp";
-            uriBuilder.Path = "TOTP DEMO APP";
-
-            var query = new Dictionary<string, string>();
-            query.Add("secret", Base32Encoding.ToString(secretKey));
-            query.Add("issuer", "Edward Hsu DEMO APP");
-
-            var uri = uriBuilder.ToString();
-            uri = QueryHelpers.AddQueryString(uri, query);
+            var uri = CreateTOTPUri("DEMO AAPP", "EdwardHsu DEMO APP");
 
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(uri, QRCodeGenerator.ECCLevel.Q);
@@ -63,6 +53,23 @@ namespace EdwardHsu.Lab.TOTP.Controllers
             qrCodeImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
             return File(stream.ToArray(), "image/png");
+        }
+
+        private string CreateTOTPUri(string appname, string issuer)
+        {
+            UriBuilder uriBuilder = new UriBuilder();
+            uriBuilder.Scheme = "otpauth";
+            uriBuilder.Host = "totp";
+            uriBuilder.Path = appname;
+
+            var query = new Dictionary<string, string>();
+            query.Add("secret", Base32Encoding.ToString(secretKey));
+            query.Add("issuer", issuer);
+
+            var uri = uriBuilder.ToString();
+            uri = QueryHelpers.AddQueryString(uri, query);
+
+            return uri;
         }
 
         [HttpPost]
